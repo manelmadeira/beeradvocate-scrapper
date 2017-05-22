@@ -19,6 +19,9 @@ class BeerscrapperPipeline(object):
         db = connection[settings['MONGODB_DB']]
         self.collection = db[settings['MONGODB_COLLECTION']]
 
+        # clear collection
+        self.collection.delete_many({})
+
 
     def process_item(self, item, spider):
         if not isinstance(item, BeerItem):
@@ -27,7 +30,7 @@ class BeerscrapperPipeline(object):
         self.collection.insert(dict(item))
         log.msg(
             "Beer ({name}) added to MongoDB database!".format(
-                name=item["name"]
+                name=str(item["name"])
             ),
             level=log.DEBUG,
             spider=spider

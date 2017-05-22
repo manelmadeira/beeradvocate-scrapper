@@ -8,9 +8,16 @@ from beerscrapper.items import *
 class BeerSpider(scrapy.Spider):
     name = 'beer'
     allowed_domains = ['www.beeradvocate.com']
-    start_urls = ['https://www.beeradvocate.com/beer/style/128/']
+    start_urls = ['https://www.beeradvocate.com/beer/style/']
 
     def parse(self, response):
+        table = response.xpath('//*[@id="ba-content"]/table')
+        styles = table.xpath('//a[contains(@href, "/style/")]/@href')
+
+        for style in styles:
+            yield response.follow(style, self.parse_style)
+
+    def parse_style(self, response):
         table = response.css('div#ba-content table')
         table_row = table.css('tr')
 
