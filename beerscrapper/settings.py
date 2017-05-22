@@ -88,3 +88,8 @@ AUTOTHROTTLE_MAX_DELAY = 60
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+MONGODB_SERVER = "localhost"
+MONGODB_PORT = 27020
+MONGODB_DB = "beeradvocated"
+MONGODB_COLLECTION = "beers"
