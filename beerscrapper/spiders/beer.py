@@ -19,7 +19,7 @@ class BeerSpider(scrapy.Spider):
                 yield response.follow(beer_url, self.parse_beer)
 
             if idx == table_len:
-                next_url = row.css('td:nth-child(1) a:nth-child(3)::attr(href)').extract_first()
+                next_url = row.xpath('//td/span/a[contains(text(), "next")]/@href').extract_first()
                 yield response.follow(next_url, self.parse)
 
             idx += 1
@@ -32,11 +32,21 @@ class BeerSpider(scrapy.Spider):
         ba_score = main_content.css('span.ba-score::text').extract_first()
         ba_ratings = main_content.css('span.ba-ratings::text').extract_first()
         picture = beer_info.css('img::attr(src)').extract_first()
-        producer = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[1]/b/text()').extract_first()
-        city = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[2]/text()').extract_first()
-        country = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[3]/text()').extract_first()
-        website = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[4]/text()').extract_first()
-        style = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[5]/b/text()').extract_first()
+        producer = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[contains(@href, "beer/profile")]/b/text()').extract_first()
+
+        location = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[contains(@href, "place")]/text()').extract()
+
+        city = ''
+        country = ''
+        print location
+        if len(location) > 1:
+            city = location[0]
+            country = location[1]
+        else:
+            country = location[0]
+
+        website = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[contains(@target, "_blank")]/text()').extract_first()
+        style = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/a[contains(.//@href, "style")]/b/text()').extract_first()
         alcohol = response.xpath('//*[@id="ba-content"]/div[3]/div[2]/text()[14]').extract_first()
 
         yield {
