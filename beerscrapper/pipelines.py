@@ -29,9 +29,7 @@ class BeerscrapperPipeline(object):
 
         self.collection.insert(dict(item))
         log.msg(
-            "Beer ({name}) added to MongoDB database!".format(
-                name=str(item["name"])
-            ),
+            "Beer added to MongoDB database!",
             level=log.DEBUG,
             spider=spider
         )
